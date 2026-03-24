@@ -8,6 +8,9 @@ class PatternAction:
     regex_str: str
     action: Optional[str]  # Python code, or None if no action
     priority: int          # Definition order (lower = higher precedence)
+    token_name: Optional[str] = None  # Extracted token name for diagram labels
+                                      # e.g. 'IF' from 'return ("IF", lxm)'
+                                      # None for whitespace/skip rules
 
 
 @dataclass

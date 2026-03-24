@@ -4,6 +4,7 @@ Reads a .yal file, builds DFA, generates standalone lexer.
 """
 import sys
 import os
+import re
 
 from yalex.parser import parse_yalex
 from regex.parser import parse_regex
@@ -12,6 +13,24 @@ from automata.nfa import build_combined_nfa
 from automata.dfa import nfa_to_dfa
 from automata.minimize import minimize_dfa
 from codegen.generator import generate_lexer
+
+
+def _extract_token_name(action: str) -> str | None:
+    """Extract a readable token name from an action string.
+
+    Examples:
+        'return ("IF", lxm)'   → 'IF'
+        'return ("FLOAT", lxm)' → 'FLOAT'
+        'return None'           → None   (skip/whitespace rule)
+        'return lxm'            → None   (no named token)
+    """
+    if not action:
+        return None
+    # Match: return ("TOKEN_NAME", ...) or return ('TOKEN_NAME', ...)
+    match = re.search(r'return\s*\(\s*["\']([A-Z_][A-Z0-9_]*)["\']', action)
+    if match:
+        return match.group(1)
+    return None
 
 
 def run_pipeline(yal_path: str, output_path: str) -> dict:
@@ -45,11 +64,15 @@ def run_pipeline(yal_path: str, output_path: str) -> dict:
         ast = parse_regex(defn.regex_str, definitions)
         definitions[defn.name] = ast
 
-    # 3. Parse each pattern's regex and build combined NFA
+    # 3. Parse each pattern's regex, extract token_name, and build combined NFA
     patterns = []
     for pattern in rule.patterns:
         print(f"  Parsing pattern: {pattern.regex_str}")
         ast = parse_regex(pattern.regex_str, definitions)
+
+        # Populate token_name for use by the diagram visualizer (Person 3)
+        pattern.token_name = _extract_token_name(pattern.action or "")
+
         patterns.append((ast, pattern.action or "return None", pattern.priority))
 
     print(f"\nBuilding combined NFA for {len(patterns)} patterns...")
