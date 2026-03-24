@@ -1,0 +1,12 @@
+int main() {
+    float x = 3.14;
+    int count = 0;
+    while (count < 10) {
+        x = x + 1.5;
+        count++;
+    }
+    if (x >= 15.0 && count == 10) {
+        return 0;
+    }
+    @ $ ~
+}

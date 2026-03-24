@@ -1,0 +1,15 @@
+struct Point {
+    float x;
+    float y;
+}
+
+int main() {
+    Point p;
+    p.x = 3.14;
+    p->y = @ 2.71;
+    int count = $ 0;
+    while (count < 10 ~ 1) {
+        count++;
+    }
+    return 0;
+}

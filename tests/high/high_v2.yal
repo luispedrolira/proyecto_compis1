@@ -1,0 +1,54 @@
+(* high_v2.yal - Lenguaje extendido con operador punto y flecha *)
+
+let letter = ['a'-'z' 'A'-'Z' '_']
+let digit = ['0'-'9']
+let id = letter (letter | digit)*
+let number = digit+
+let float_num = digit+ '.' digit+
+let whitespace = [' ' '\t' '\n' '\r']
+
+rule tokens =
+    whitespace+                    { return None }
+  | "if"                           { return ("IF", lxm) }
+  | "else"                         { return ("ELSE", lxm) }
+  | "while"                        { return ("WHILE", lxm) }
+  | "for"                          { return ("FOR", lxm) }
+  | "return"                       { return ("RETURN", lxm) }
+  | "int"                          { return ("TYPE_INT", lxm) }
+  | "float"                        { return ("TYPE_FLOAT", lxm) }
+  | "void"                         { return ("VOID", lxm) }
+  | "true"                         { return ("TRUE", lxm) }
+  | "false"                        { return ("FALSE", lxm) }
+  | "struct"                       { return ("STRUCT", lxm) }
+  | "null"                         { return ("NULL", lxm) }
+  | float_num                      { return ("FLOAT_LIT", lxm) }
+  | number                         { return ("INT_LIT", lxm) }
+  | id                             { return ("ID", lxm) }
+  | "->"                           { return ("ARROW", lxm) }
+  | "++"                           { return ("INCREMENT", lxm) }
+  | "+"                            { return ("PLUS", lxm) }
+  | "--"                           { return ("DECREMENT", lxm) }
+  | "-"                            { return ("MINUS", lxm) }
+  | "**"                           { return ("POWER", lxm) }
+  | "*"                            { return ("TIMES", lxm) }
+  | "/"                            { return ("DIV", lxm) }
+  | "%"                            { return ("MOD", lxm) }
+  | "=="                           { return ("EQ", lxm) }
+  | "!="                           { return ("NEQ", lxm) }
+  | "<="                           { return ("LEQ", lxm) }
+  | ">="                           { return ("GEQ", lxm) }
+  | "<"                            { return ("LT", lxm) }
+  | ">"                            { return ("GT", lxm) }
+  | "&&"                           { return ("AND", lxm) }
+  | "||"                           { return ("OR", lxm) }
+  | "!"                            { return ("NOT", lxm) }
+  | "="                            { return ("ASSIGN", lxm) }
+  | '.'                            { return ("DOT", lxm) }
+  | '('                            { return ("LPAREN", lxm) }
+  | ')'                            { return ("RPAREN", lxm) }
+  | '{'                            { return ("LBRACE", lxm) }
+  | '}'                            { return ("RBRACE", lxm) }
+  | '['                            { return ("LBRACKET", lxm) }
+  | ']'                            { return ("RBRACKET", lxm) }
+  | ';'                            { return ("SEMICOLON", lxm) }
+  | ','                            { return ("COMMA", lxm) }

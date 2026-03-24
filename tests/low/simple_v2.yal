@@ -1,0 +1,13 @@
+(* simple_v2.yal - Calculadora extendida con modulo y potencia *)
+
+rule tokens =
+    [' ' '\t' '\n']+ { return None }
+  | ['0'-'9']+       { return ("NUMBER", lxm) }
+  | '+'              { return ("PLUS", lxm) }
+  | '-'              { return ("MINUS", lxm) }
+  | '*'              { return ("TIMES", lxm) }
+  | '/'              { return ("DIV", lxm) }
+  | '%'              { return ("MOD", lxm) }
+  | '^'              { return ("POW", lxm) }
+  | '('              { return ("LPAREN", lxm) }
+  | ')'              { return ("RPAREN", lxm) }

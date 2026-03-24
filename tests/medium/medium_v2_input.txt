@@ -1,0 +1,8 @@
+if x <= 3.14
+while count >= 10
+if a == b
+if a != b
+return result
+x = y + 2 * 3
+if (a > b) return 0
+else while < 99

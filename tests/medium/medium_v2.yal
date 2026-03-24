@@ -1,0 +1,33 @@
+(* medium_v2.yal - Subconjunto de C con operadores de comparacion *)
+
+let letter = ['a'-'z' 'A'-'Z']
+let digit = ['0'-'9']
+let id = letter (letter | digit)*
+let number = digit+
+let float_num = digit+ '.' digit+
+
+rule tokens =
+    [' ' '\t' '\n']+          { return None }
+  | "if"                       { return ("IF", lxm) }
+  | "else"                     { return ("ELSE", lxm) }
+  | "while"                    { return ("WHILE", lxm) }
+  | "return"                   { return ("RETURN", lxm) }
+  | float_num                  { return ("FLOAT", lxm) }
+  | number                     { return ("NUMBER", lxm) }
+  | id                         { return ("ID", lxm) }
+  | "=="                       { return ("EQ", lxm) }
+  | "!="                       { return ("NEQ", lxm) }
+  | "<="                       { return ("LEQ", lxm) }
+  | ">="                       { return ("GEQ", lxm) }
+  | '<'                        { return ("LT", lxm) }
+  | '>'                        { return ("GT", lxm) }
+  | '+'                        { return ("PLUS", lxm) }
+  | '-'                        { return ("MINUS", lxm) }
+  | '*'                        { return ("TIMES", lxm) }
+  | '/'                        { return ("DIV", lxm) }
+  | '='                        { return ("ASSIGN", lxm) }
+  | '('                        { return ("LPAREN", lxm) }
+  | ')'                        { return ("RPAREN", lxm) }
+  | '{'                        { return ("LBRACE", lxm) }
+  | '}'                        { return ("RBRACE", lxm) }
+  | ';'                        { return ("SEMICOLON", lxm) }
