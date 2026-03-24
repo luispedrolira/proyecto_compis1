@@ -1,0 +1,7 @@
+if x = 3.14
+while count + 1
+return result
+foo123 bar
+x = y + 2 * 3
+if (a - b) return 0
+else while = 99

@@ -16,7 +16,7 @@ class TokenType(Enum):
     RBRACKET = auto()   # ]
     CARET = auto()      # ^ (negation in charset)
     DASH = auto()       # - (range in charset)
-    UNDERSCORE = auto() # _ (wildcard)
+    UNDERSCORE = auto() # _ (wildcard, solo)
     IDENT = auto()      # Named regex reference
     CONCAT = auto()     # Implicit concatenation (inserted by tokenizer)
     EOF_TOKEN = auto()  # Special "eof" keyword
@@ -63,8 +63,8 @@ def tokenize_regex(text: str) -> list[Token]:
     - Character sets: [...], [^...]
     - Operators: * + ? | #
     - Parentheses: ( )
-    - Wildcard: _
-    - Named references: identifiers (alphabetic words)
+    - Wildcard: _ (standalone underscore, not inside an identifier)
+    - Named references: identifiers (alphabetic words, may contain _)
     - Special keyword: eof
     """
     tokens = []
@@ -109,8 +109,6 @@ def tokenize_regex(text: str) -> list[Token]:
             if pos >= len(text):
                 raise ValueError("Unterminated string literal")
             pos += 1  # skip closing quote
-            # Insert CONCAT between chars from string
-            # We'll handle this in the concat-insertion pass
             continue
 
         # Character set: [...] or [^...]
@@ -193,18 +191,20 @@ def tokenize_regex(text: str) -> list[Token]:
             tokens.append(Token(TokenType.RPAREN))
             pos += 1
             continue
-        if ch == '_':
-            tokens.append(Token(TokenType.UNDERSCORE))
-            pos += 1
-            continue
 
-        # Identifier or keyword (eof)
-        if ch.isalpha():
+        # FIX: Identifier check comes BEFORE standalone underscore.
+        # An identifier can start with a letter OR underscore and contain
+        # letters, digits, and underscores (e.g. float_num, my_id, _private).
+        # A standalone '_' with no alphanumeric continuation is the wildcard.
+        if ch.isalpha() or ch == '_':
             start = pos
             while pos < len(text) and (text[pos].isalnum() or text[pos] == '_'):
                 pos += 1
             word = text[start:pos]
-            if word == 'eof':
+            if word == '_':
+                # Standalone underscore = wildcard
+                tokens.append(Token(TokenType.UNDERSCORE))
+            elif word == 'eof':
                 tokens.append(Token(TokenType.EOF_TOKEN))
             else:
                 tokens.append(Token(TokenType.IDENT, word))
