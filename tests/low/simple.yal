@@ -1,0 +1,11 @@
+(* simple.yal - Low complexity lexer: calculator tokens *)
+
+rule tokens =
+    [' ' '\t' '\n']+ { return None }
+  | ['0'-'9']+       { return ("NUMBER", lxm) }
+  | '+'              { return ("PLUS", lxm) }
+  | '-'              { return ("MINUS", lxm) }
+  | '*'              { return ("TIMES", lxm) }
+  | '/'              { return ("DIV", lxm) }
+  | '('              { return ("LPAREN", lxm) }
+  | ')'              { return ("RPAREN", lxm) }
